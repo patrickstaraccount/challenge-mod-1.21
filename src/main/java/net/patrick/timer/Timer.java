@@ -11,6 +11,6 @@ public class Timer implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-
+		TimerCommand.register();
 	}
 }
