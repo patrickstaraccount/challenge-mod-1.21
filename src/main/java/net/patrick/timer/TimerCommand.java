@@ -3,8 +3,6 @@ package net.patrick.timer;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.server.ServerTickManager;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -15,7 +13,6 @@ import net.patrick.timer.command.DevCleanSuggestionProvider;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class TimerCommand {
     private static final Map<ServerPlayerEntity, Integer> playerTimers = new HashMap<>();
@@ -82,7 +79,7 @@ public class TimerCommand {
                                 source.sendFeedback(() -> Text.literal("[Timer] Timer reset to 0"), false);
                             }
                             default -> {
-                                source.sendFeedback(() -> Text.literal("[Timer] Invalid action. Use /timer start, pause, resume, or reset."), false);
+                                source.sendFeedback(() -> Text.literal("[Timer] Type /timer help for Syntax"), false);
                             }
                         }
                         return 1;
