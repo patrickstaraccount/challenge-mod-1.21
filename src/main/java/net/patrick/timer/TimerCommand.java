@@ -13,6 +13,7 @@ import net.patrick.timer.command.DevCleanSuggestionProvider;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class TimerCommand {
     private static final Map<ServerPlayerEntity, Integer> playerTimers = new HashMap<>();
@@ -52,6 +53,10 @@ public class TimerCommand {
                             return 1;
                         }
 
+                        if (Objects.equals(typ, "")){
+                            typ = "help";
+                        }
+
                         switch (typ) {
                             case "start" -> {
                                 playerTimers.put(player, 0);
@@ -75,8 +80,14 @@ public class TimerCommand {
                             }
                             case "reset" -> {
                                 PlayerTimerData.save(player, 0);
-                                playerTimers.put(player, 0); // Reset in memory
+                                playerTimers.remove(player);
                                 source.sendFeedback(() -> Text.literal("[Timer] Timer reset to 0"), false);
+                            }
+                            case "help" -> {
+                                source.sendFeedback(() -> Text.literal("[Timer] /timer start to start the Timer"), false);
+                                source.sendFeedback(() -> Text.literal("[Timer] /timer pause to pause the Timer"), false);
+                                source.sendFeedback(() -> Text.literal("[Timer] /timer resume to resume the Timer at the last paused stage"), false);
+                                source.sendFeedback(() -> Text.literal("[Timer] /timer reset to reset the Timer back to 0"), false);
                             }
                             default -> {
                                 source.sendFeedback(() -> Text.literal("[Timer] Type /timer help for Syntax"), false);

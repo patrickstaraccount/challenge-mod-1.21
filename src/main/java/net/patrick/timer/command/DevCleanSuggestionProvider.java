@@ -16,7 +16,8 @@ public class DevCleanSuggestionProvider implements SuggestionProvider <ServerCom
             .suggest("start")
             .suggest("pause")
             .suggest("resume")
-            .suggest("reset");
+            .suggest("reset")
+            .suggest("help");
         return suggestionsBuilder.buildFuture();
     }
 }
