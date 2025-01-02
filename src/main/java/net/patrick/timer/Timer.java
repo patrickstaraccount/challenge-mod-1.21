@@ -15,6 +15,6 @@ public class Timer implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		TimerCommand.register(); 		//register TimerCommand
-
+		PlayerJoinHandler.register();	//register welcome Message
 	}
 }
