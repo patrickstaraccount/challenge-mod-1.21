@@ -1,4 +1,4 @@
-package net.patrick.timer;
+package net.patrick.timer.command.timerCommand;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 
