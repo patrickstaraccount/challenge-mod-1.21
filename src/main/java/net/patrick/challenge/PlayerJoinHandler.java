@@ -1,9 +1,9 @@
-package net.patrick.timer;
+package net.patrick.challenge;
 
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.patrick.timer.command.timerCommand.feedback;
+import net.patrick.challenge.commands.timerCommand.feedback;
 
 public class PlayerJoinHandler {
     public static void register(){

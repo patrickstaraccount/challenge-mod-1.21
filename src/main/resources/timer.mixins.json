@@ -1,6 +1,6 @@
 {
 	"required": true,
-	"package": "net.patrick.timer.mixin",
+	"package": "net.patrick.challenge.mixin",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
 		"ExampleMixin"

@@ -1,8 +1,8 @@
-package net.patrick.timer;
+package net.patrick.challenge;
 
 import net.fabricmc.api.ClientModInitializer;
 
-public class TimerClient implements ClientModInitializer {
+public class ChallengeClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
 

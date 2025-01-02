@@ -1,12 +1,10 @@
-package net.patrick.timer.command.timerCommand;
+package net.patrick.challenge.commands.timerCommand;
 
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-
-import java.text.Normalizer;
 
 //formats the feedback sent back to the player
 public class feedback {

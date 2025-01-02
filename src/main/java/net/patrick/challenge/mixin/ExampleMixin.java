@@ -1,4 +1,4 @@
-package net.patrick.timer.mixin;
+package net.patrick.challenge.mixin;
 
 import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;

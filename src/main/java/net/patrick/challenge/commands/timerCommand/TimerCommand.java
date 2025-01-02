@@ -1,4 +1,4 @@
-package net.patrick.timer.command.timerCommand;
+package net.patrick.challenge.commands.timerCommand;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
