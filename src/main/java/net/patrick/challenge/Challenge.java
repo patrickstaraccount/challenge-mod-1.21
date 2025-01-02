@@ -1,6 +1,7 @@
 package net.patrick.challenge;
 
 import net.fabricmc.api.ModInitializer;
+import net.patrick.challenge.commands.challengeCommand.ChallengeCommand;
 import net.patrick.challenge.commands.timerCommand.TimerCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +15,8 @@ public class Challenge implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		TimerCommand.register(); 		//register TimerCommand
+		TimerCommand.register();        //register TimerCommand
+		ChallengeCommand.register();    //register ChallengeCommand
 		PlayerJoinHandler.register();	//register welcome Message
 	}
 }

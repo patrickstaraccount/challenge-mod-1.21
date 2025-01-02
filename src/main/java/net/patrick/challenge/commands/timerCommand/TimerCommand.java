@@ -14,10 +14,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TimerCommand {
-    private static final Map<ServerPlayerEntity, Integer> playerTimers = new HashMap<>();
+    public static final Map<ServerPlayerEntity, Integer> playerTimers = new HashMap<>();
     private static int tickCounter = 0;
-
-
 
     public static void register() {
 
@@ -67,8 +65,8 @@ public class TimerCommand {
                         playerTimers.put(player, 0);
                         PlayerTimerData.save(player, 0);
 
-                        //send feedback to the source
-                        feedback.start(source);
+                        //send timerFeedback to the source
+                        timerFeedback.start(source);
                         return 1;
                     }))
 
@@ -95,11 +93,11 @@ public class TimerCommand {
                             PlayerTimerData.save(player, currentTimerValue);
                             playerTimers.remove(player);
 
-                            //send feedback to the source
-                            feedback.pause(source, days, hours, minutes, seconds);
+                            //send timerFeedback to the source
+                            timerFeedback.pause(source, days, hours, minutes, seconds);
                         } else {
-                            //send feedback to the source if there is no timer to pause
-                            feedback.noPause(source);
+                            //send timerFeedback to the source if there is no timer to pause
+                            timerFeedback.noPause(source);
                         }
                         return 1;
                     }))
@@ -122,12 +120,12 @@ public class TimerCommand {
                             //update players timer with value from storage
                             playerTimers.put(player, persistedTimerValue);
 
-                            //send feedback to the source
-                            feedback.resume(source, persistedTimerValue);
+                            //send timerFeedback to the source
+                            timerFeedback.resume(source, persistedTimerValue);
 
                         } else {
-                            //send feedback to the source if there is no active timer to resume
-                            feedback.noResume(source);
+                            //send timerFeedback to the source if there is no active timer to resume
+                            timerFeedback.noResume(source);
                         }
                         return 1;
                     }))
@@ -145,8 +143,8 @@ public class TimerCommand {
                         PlayerTimerData.save(player, 0);
                         playerTimers.remove(player);
 
-                        //send feedback to the source
-                        feedback.reset(source);
+                        //send timerFeedback to the source
+                        timerFeedback.reset(source);
                         return 1;
                     }))
 
@@ -159,8 +157,8 @@ public class TimerCommand {
                         //check if source is player
                         if(!isPlayer(source)) return 0;
 
-                        //send feedback to the source
-                        feedback.help(source);
+                        //send timerFeedback to the source
+                        timerFeedback.help(source);
                         return 1;
                     }))
 
@@ -186,11 +184,11 @@ public class TimerCommand {
 
                             //check input
                             if (seconds >= 60 || minutes >= 60 || hours >= 24) {
-                                feedback.invalidInput(source);
+                                timerFeedback.invalidInput(source);
                                 return 0;
                             }
                             if (days > 1000){
-                                feedback.invalidDay(source);
+                                timerFeedback.invalidDay(source);
                                 return 0;
                             }
 
@@ -201,9 +199,9 @@ public class TimerCommand {
                             playerTimers.put(player, totalSeconds);
                             PlayerTimerData.save(player, totalSeconds);
 
-                            //send feedback with formatted time
+                            //send timerFeedback with formatted time
                             String timeMessage = formatTimeMessage(days, hours, minutes, seconds);
-                            feedback.set(source, timeMessage);
+                            timerFeedback.set(source, timeMessage);
                             return 1;
                         })
                 ))))));
@@ -228,7 +226,7 @@ public class TimerCommand {
 
     private static boolean isPlayer(ServerCommandSource source){
         if (!(source.getEntity() instanceof ServerPlayerEntity player)) {
-            feedback.isPlayer(source);
+            timerFeedback.isPlayer(source);
             return false;
         }else return true;
     }
