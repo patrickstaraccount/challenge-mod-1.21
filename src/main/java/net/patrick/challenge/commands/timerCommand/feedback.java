@@ -15,26 +15,37 @@ public class feedback {
     static Text timer = Text.empty().append(s).append(s2).append(s3);
 
     public static void help(ServerCommandSource source){
+        Text a1 = Text.literal("----------------").setStyle(Style.EMPTY.withColor(Formatting.GRAY));
+        Text a2 = Text.literal("Timer").setStyle(Style.EMPTY.withColor(Formatting.GREEN).withBold(true));
+
+        source.sendFeedback(() -> Text.empty(), false);
+        source.sendFeedback(() -> Text.empty().append(feedback.timer).append(a1).append("  ").append(a2).append("  ").append(a1), false);
         source.sendFeedback(() -> Text.empty()
             .append(feedback.timer)
-            .append("/timer start um den Timer zu starten").setStyle(Style.EMPTY.withColor(Formatting.GRAY)),
+            .append("  ")
+            .append("/timer start um den Timer zu starten"),
                 false);
         source.sendFeedback(() -> Text.empty()
             .append(feedback.timer)
-            .append("/timer pause um den Timer zu pausieren").setStyle(Style.EMPTY.withColor(Formatting.GRAY)),
+            .append("  ")
+            .append("/timer pause um den Timer zu pausieren"),
                 false);
         source.sendFeedback(() -> Text.empty()
             .append(feedback.timer)
-            .append("/timer resume um den Timer fortzusetzen").setStyle(Style.EMPTY.withColor(Formatting.GRAY)),
+            .append("  ")
+            .append("/timer resume um den Timer fortzusetzen"),
                 false);
         source.sendFeedback(() -> Text.empty()
             .append(feedback.timer)
-            .append("/timer reset um den Timer auf 0 zu setzen").setStyle(Style.EMPTY.withColor(Formatting.GRAY)),
+            .append("  ")
+            .append("/timer reset um den Timer auf 0 zu setzen"),
                 false);
         source.sendFeedback(() -> Text.empty()
             .append(feedback.timer)
-            .append("/timer set <sec> <min> <hours> <days> um den Timer auf einen bestimmten Wert zu setzen").setStyle(Style.EMPTY.withColor(Formatting.GRAY)),
+            .append("  ")
+            .append("/timer set <sec> <min> <hours> <days> um den Timer auf einen bestimmten Wert zu setzen"),
                 false);
+        source.sendFeedback(() -> Text.empty(), false);
     }
 
     public static void reset(ServerCommandSource source){
