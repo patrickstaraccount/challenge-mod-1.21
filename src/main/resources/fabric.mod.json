@@ -16,13 +16,13 @@
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"net.patrick.timer.Timer"
+			"net.patrick.challenge.Challenge"
 		],
 		"fabric-datagen": [
-			"net.patrick.timer.TimerDataGenerator"
+			"net.patrick.challenge.ChallengeDataGenerator"
 		],
 		"client": [
-			"net.patrick.timer.TimerClient"
+			"net.patrick.challenge.ChallengeClient"
 		]
 	},
 	"mixins": [
