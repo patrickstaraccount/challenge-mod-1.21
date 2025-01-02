@@ -15,19 +15,18 @@ import java.util.Map;
 
 public class TimerCommand {
     private static final Map<ServerPlayerEntity, Integer> playerTimers = new HashMap<>();
-    private static int tickcounter = 0;
+    private static int tickCounter = 0;
     private static int min = 0;
     private static int hour = 0;
     private static int day = 0;
     public static void register() {
         ServerTickEvents.START_SERVER_TICK.register(minecraftServer -> {
-            tickcounter++;
-            if(tickcounter >= 20){
-                tickcounter = 0;
+            tickCounter++;
+            if(tickCounter >= 20){
+                tickCounter = 0;
                 for (Map.Entry<ServerPlayerEntity, Integer> entry : playerTimers.entrySet()){
                     ServerPlayerEntity player = entry.getKey();
                     int timerValue = entry.getValue();
-                    int sec = timerValue;
                     if (timerValue < 60) {
                         String timeMessage = formatTimeMessage(day, hour, min, timerValue);
                         player.sendMessage(Text.literal(timeMessage)
