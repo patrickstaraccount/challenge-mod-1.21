@@ -16,6 +16,9 @@ import java.util.Map;
 public class TimerCommand {
     private static final Map<ServerPlayerEntity, Integer> playerTimers = new HashMap<>();
     private static int tickCounter = 0;
+
+
+
     public static void register() {
 
         //timer using ServerTickEvent
@@ -55,14 +58,17 @@ public class TimerCommand {
                 .then(CommandManager.literal("start")
                     .executes(commandContext -> {
                         ServerCommandSource source = commandContext.getSource();
-                        if (!(source.getEntity() instanceof ServerPlayerEntity player)) {
-                            source.sendFeedback(() -> Text.literal("This can only be used by a player"), false);
-                            return 0;
-                        }
+                        ServerPlayerEntity player = source.getPlayer();
 
+                        //check if source is player
+                        if(!isPlayer(source)) return 0;
+
+                        //update and save timer
                         playerTimers.put(player, 0);
                         PlayerTimerData.save(player, 0);
-                        source.sendFeedback(() -> Text.literal("[Timer] Timer started at 0"), false);
+
+                        //send feedback to the source
+                        feedback.start(source);
                         return 1;
                     }))
 
@@ -70,25 +76,30 @@ public class TimerCommand {
                 .then(CommandManager.literal("pause")
                     .executes(commandContext -> {
                         ServerCommandSource source = commandContext.getSource();
+                        ServerPlayerEntity player = source.getPlayer();
 
-                        if (!(source.getEntity() instanceof ServerPlayerEntity player)) {
-                            source.sendFeedback(() -> Text.literal("This can only be used by a player"), false);
-                            return 0;
-                        }
+                        //check if source is player
+                        if(!isPlayer(source)) return 0;
 
+                        //check if there is a timer to pause
                         if (playerTimers.containsKey(player)) {
                             int currentTimerValue = playerTimers.get(player);
 
+                            //calculate var: days, hours, minutes, seconds
                             int days = currentTimerValue / (24 * 3600);
                             int hours = (currentTimerValue % (24 * 3600)) / 3600;
                             int minutes = (currentTimerValue % 3600) / 60;
                             int seconds = currentTimerValue % 60;
 
+                            //update and save timer
                             PlayerTimerData.save(player, currentTimerValue);
                             playerTimers.remove(player);
-                            source.sendFeedback(() -> Text.literal("[Timer] Timer paused at: " + formatTimeMessage(days, hours, minutes, seconds)), false);
+
+                            //send feedback to the source
+                            feedback.pause(source, days, hours, minutes, seconds);
                         } else {
-                            source.sendFeedback(() -> Text.literal("[Timer] No active timer to pause!"), false);
+                            //send feedback to the source if there is no timer to pause
+                            feedback.noPause(source);
                         }
                         return 1;
                     }))
@@ -97,23 +108,26 @@ public class TimerCommand {
                 .then(CommandManager.literal("resume")
                     .executes(commandContext -> {
                         ServerCommandSource source = commandContext.getSource();
+                        ServerPlayerEntity player = source.getPlayer();
 
-                        if (!(source.getEntity() instanceof ServerPlayerEntity player)) {
-                            source.sendFeedback(() -> Text.literal("This can only be used by a player"), false);
-                            return 0;
-                        }
+                        //check if source is player
+                        if(!isPlayer(source)) return 0;
 
+                        //get timerValue from players storage
                         int persistedTimerValue = PlayerTimerData.load(player);
+
+                        //check if there is active timer in storage of player to resume
                         if (persistedTimerValue > 0) {
+
+                            //update players timer with value from storage
                             playerTimers.put(player, persistedTimerValue);
-                            source.sendFeedback(() -> Text.literal("[Timer] Timer resumed at: " + formatTimeMessage(
-                                    persistedTimerValue / (24 * 3600),
-                                            (persistedTimerValue % (24 * 3600)) / 3600,
-                                            (persistedTimerValue % 3600) / 60,
-                                            persistedTimerValue % 60)),
-                                    false);
+
+                            //send feedback to the source
+                            feedback.resume(source, persistedTimerValue);
+
                         } else {
-                            source.sendFeedback(() -> Text.literal("[Timer] No timer to resume!"), false);
+                            //send feedback to the source if there is no active timer to resume
+                            feedback.noResume(source);
                         }
                         return 1;
                     }))
@@ -122,27 +136,31 @@ public class TimerCommand {
                 .then(CommandManager.literal("reset")
                     .executes(commandContext -> {
                         ServerCommandSource source = commandContext.getSource();
+                        ServerPlayerEntity player = source.getPlayer();
 
-                        if (!(source.getEntity() instanceof ServerPlayerEntity player)) {
-                            source.sendFeedback(() -> Text.literal("This can only be used by a player"), false);
-                            return 0;
-                        }
+                        //check if source is player
+                        if(!isPlayer(source)) return 0;
 
+                        //update and save timer
                         PlayerTimerData.save(player, 0);
                         playerTimers.remove(player);
-                        source.sendFeedback(() -> Text.literal("[Timer] Timer reset to 0"), false);
+
+                        //send feedback to the source
+                        feedback.reset(source);
                         return 1;
                     }))
 
-                //command to
+                //command to show syntax of possible subcommands
                 .then(CommandManager.literal("help")
                     .executes(commandContext -> {
                         ServerCommandSource source = commandContext.getSource();
-                        source.sendFeedback(() -> Text.literal("[Timer] /timer start to start the Timer"), false);
-                        source.sendFeedback(() -> Text.literal("[Timer] /timer pause to pause the Timer"), false);
-                        source.sendFeedback(() -> Text.literal("[Timer] /timer resume to resume the Timer at the last paused stage"), false);
-                        source.sendFeedback(() -> Text.literal("[Timer] /timer reset to reset the Timer back to 0"), false);
-                        source.sendFeedback(() -> Text.literal("[Timer] /timer set <value> to set the Timer to a specific value"), false);
+                        ServerPlayerEntity player = source.getPlayer();
+
+                        //check if source is player
+                        if(!isPlayer(source)) return 0;
+
+                        //send feedback to the source
+                        feedback.help(source);
                         return 1;
                     }))
 
@@ -154,11 +172,11 @@ public class TimerCommand {
                     .then(CommandManager.argument("day", IntegerArgumentType.integer(0))
                         .executes(commandContext -> {
                             ServerCommandSource source = commandContext.getSource();
+                            ServerPlayerEntity player = source.getPlayer();
 
-                            if (!(source.getEntity() instanceof ServerPlayerEntity player)) {
-                                source.sendFeedback(() -> Text.literal("This can only be used by a player"), false);
-                                return 0;
-                            }
+                            //check if source is player
+                            if(!isPlayer(source)) return 0;
+
 
                             //get player input
                             int seconds = IntegerArgumentType.getInteger(commandContext, "sec");
@@ -168,7 +186,11 @@ public class TimerCommand {
 
                             //check input
                             if (seconds >= 60 || minutes >= 60 || hours >= 24) {
-                                source.sendFeedback(() -> Text.literal("[Timer] Invalid time values! Seconds must be < 60, minutes must be < 60, and hours must be < 24."), false);
+                                feedback.invalidInput(source);
+                                return 0;
+                            }
+                            if (days > 1000){
+                                feedback.invalidDay(source);
                                 return 0;
                             }
 
@@ -181,7 +203,7 @@ public class TimerCommand {
 
                             //send feedback with formatted time
                             String timeMessage = formatTimeMessage(days, hours, minutes, seconds);
-                            source.sendFeedback(() -> Text.literal("[Timer] Timer set to: " + timeMessage), false);
+                            feedback.set(source, timeMessage);
                             return 1;
                         })
                 ))))));
@@ -190,7 +212,7 @@ public class TimerCommand {
     }
 
     //formats timer message based on time
-    private static String formatTimeMessage(int day, int hour, int min, int sec) {
+    public static String formatTimeMessage(int day, int hour, int min, int sec) {
         StringBuilder timeMessage = new StringBuilder();
 
         if (day > 0) {
@@ -202,6 +224,13 @@ public class TimerCommand {
         timeMessage.append(min).append("m ");
         timeMessage.append(sec).append("s");
         return timeMessage.toString();
+    }
+
+    private static boolean isPlayer(ServerCommandSource source){
+        if (!(source.getEntity() instanceof ServerPlayerEntity player)) {
+            feedback.isPlayer(source);
+            return false;
+        }else return true;
     }
 
 }
