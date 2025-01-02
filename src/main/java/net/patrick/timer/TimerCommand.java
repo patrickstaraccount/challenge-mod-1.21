@@ -18,7 +18,12 @@ import java.util.Objects;
 public class TimerCommand {
     private static final Map<ServerPlayerEntity, Integer> playerTimers = new HashMap<>();
     private static int tickcounter = 0;
+    private static int min = 0;
+    private static int hour = 0;
+    private static int day = 0;
     public static void register() {
+
+
 
         ServerTickEvents.START_SERVER_TICK.register(minecraftServer -> {
             tickcounter++;
@@ -27,12 +32,23 @@ public class TimerCommand {
                 for (Map.Entry<ServerPlayerEntity, Integer> entry : playerTimers.entrySet()){
                     ServerPlayerEntity player = entry.getKey();
                     int timerValue = entry.getValue();
-
-                    player.sendMessage(Text.literal("Timer:" + timerValue)
-                                    .setStyle(Style.EMPTY
-                                            .withColor(Formatting.GOLD)
-                                            .withBold(true)),
-                            true);
+                    int sec = timerValue;
+                    if(sec < 60){
+                        player.sendMessage(Text.literal(min + "m " + sec + "s")
+                                        .setStyle(Style.EMPTY
+                                                .withColor(Formatting.GOLD)
+                                                .withBold(true)),
+                                true);
+                    }else{
+                        min++;
+                        timerValue = 0;
+                        sec = 0;
+                        player.sendMessage(Text.literal(min + "m " + sec + "s")
+                                        .setStyle(Style.EMPTY
+                                                .withColor(Formatting.GOLD)
+                                                .withBold(true)),
+                                true);
+                    }
                     playerTimers.put(player, timerValue + 1);
                     PlayerTimerData.save(player, timerValue + 1);
                 }
@@ -68,7 +84,7 @@ public class TimerCommand {
                                     int currentTimerValue = playerTimers.get(player); // Get current timer
                                     PlayerTimerData.save(player, currentTimerValue); // Save to NBT
                                     playerTimers.remove(player); // Stop tracking in memory
-                                    source.sendFeedback(() -> Text.literal("[Timer] Timer paused at: " + currentTimerValue), false);
+                                    source.sendFeedback(() -> Text.literal("[Timer] Timer paused at: " + min + "m " + currentTimerValue + "s"), false);
                                 } else {
                                     source.sendFeedback(() -> Text.literal("[Timer] No active timer to pause!"), false);
                                 }
@@ -76,11 +92,12 @@ public class TimerCommand {
                             case "resume" -> {
                                 int persistedTimerValue = PlayerTimerData.load(player); // Get saved timer value from NBT
                                 playerTimers.put(player, persistedTimerValue); // Add to active timers
-                                source.sendFeedback(() -> Text.literal("[Timer] Timer resumed at: " + persistedTimerValue), false);
+                                source.sendFeedback(() -> Text.literal("[Timer] Timer resumed at: " + min + "m " + persistedTimerValue + "s"), false);
                             }
                             case "reset" -> {
                                 PlayerTimerData.save(player, 0);
                                 playerTimers.remove(player);
+                                TimerCommand.reset();
                                 source.sendFeedback(() -> Text.literal("[Timer] Timer reset to 0"), false);
                             }
                             case "help" -> {
@@ -96,5 +113,11 @@ public class TimerCommand {
                         return 1;
                     })));
         });
+    }
+
+    private static void reset() {
+        min = 0;
+        hour = 0;
+        day = 0;
     }
 }
