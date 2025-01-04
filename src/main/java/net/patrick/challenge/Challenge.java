@@ -2,6 +2,9 @@ package net.patrick.challenge;
 
 import net.fabricmc.api.ModInitializer;
 import net.patrick.challenge.commands.challengeCommand.ChallengeCommand;
+import net.patrick.challenge.commands.miscCommands.flyCommand;
+import net.patrick.challenge.commands.miscCommands.godCommand;
+import net.patrick.challenge.commands.miscCommands.healCommand;
 import net.patrick.challenge.commands.timerCommand.TimerCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,5 +20,8 @@ public class Challenge implements ModInitializer {
 	public void onInitialize() {
 		TimerCommand.register();        //register TimerCommand
 		ChallengeCommand.register();    //register ChallengeCommand
+		godCommand.register();          //register godCommand
+		healCommand.register();         //register healCommand
+		flyCommand.register();          //register flyCommand
 	}
 }

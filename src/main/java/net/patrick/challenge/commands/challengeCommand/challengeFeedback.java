@@ -1,10 +1,6 @@
 package net.patrick.challenge.commands.challengeCommand;
 
-import net.minecraft.client.session.report.ReporterEnvironment;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.entity.damage.DamageType;
-import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Style;
