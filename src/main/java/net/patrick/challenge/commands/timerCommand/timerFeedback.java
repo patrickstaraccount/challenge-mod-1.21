@@ -131,14 +131,4 @@ public class timerFeedback {
              .append("Dieser Command kann nur von einem Spieler verwendet werden").setStyle(Style.EMPTY.withColor(Formatting.GRAY)),
                 false);
     }
-
-    public static void welcome(ServerPlayerEntity player){
-        Text a1 = Text.literal("----------").setStyle(Style.EMPTY.withColor(Formatting.GRAY));
-        Text a2 = Text.literal("Timer").setStyle(Style.EMPTY.withColor(Formatting.GREEN).withBold(true));
-
-        player.sendMessage(Text.empty());
-        player.sendMessage(Text.empty().append(timerFeedback.timer).append(a1).append("  ").append(a2).append("  ").append(a1));
-        player.sendMessage(Text.empty().append(timerFeedback.timer).append("    ").append("/timer help für Syntax").append("    "));
-        player.sendMessage(Text.empty());
-    }
 }

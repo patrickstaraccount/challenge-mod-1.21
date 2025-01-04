@@ -1,11 +1,19 @@
 package net.patrick.challenge.commands.challengeCommand;
 
+import com.sun.jdi.event.ThreadDeathEvent;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.minecraft.client.session.report.ReporterEnvironment;
+import net.minecraft.entity.boss.dragon.EnderDragonEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.damage.DamageTypes;
+import net.minecraft.entity.passive.PigEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import net.minecraft.world.GameMode;
 import net.patrick.challenge.commands.timerCommand.PlayerTimerData;
 
@@ -15,13 +23,40 @@ public class ChallengeCommand {
     private static boolean active = false;
 
     public static void register(){
+        ServerLivingEntityEvents.AFTER_DEATH.register((livingEntity, damageSource) -> {
+            MinecraftServer server = livingEntity.getServer();
+            if (livingEntity instanceof PigEntity && active && server != null){
+                if(damageSource != null && damageSource.getAttacker() instanceof ServerPlayerEntity){
+                    ServerPlayerEntity player = (ServerPlayerEntity) damageSource.getAttacker();
+                    active = false;
+                    playerTimers.remove(player);
+                    player.changeGameMode(GameMode.SPECTATOR);
+                    sendCompletionMessage(server, player);
+                }
+            }
+        });
+
+        ServerLivingEntityEvents.ALLOW_DEATH.register((livingEntity, damageSource, v) -> {
+            if (livingEntity instanceof PlayerEntity player && active) {
+                if (!damageSource.isOf(DamageTypes.FALL)) {
+                    MinecraftServer server = livingEntity.getServer();
+                    active = false;
+                    playerTimers.remove(player);
+                    sendFailMessage(server);
+                    return false;
+                }
+            }
+            return true;
+        });
+
+
         ServerLivingEntityEvents.ALLOW_DAMAGE.register((entity, source, amount) -> {
             if(active && source.isOf(DamageTypes.FALL) && entity instanceof ServerPlayerEntity player){
                 challengeFeedback.noFallFailed(player, PlayerTimerData.load(player));
                 active = false;
                 playerTimers.remove(player);
                 ((ServerPlayerEntity) entity).changeGameMode(GameMode.SPECTATOR);
-                return true;
+                return false;
             }else return true;
         });
 
@@ -62,11 +97,23 @@ public class ChallengeCommand {
                             }else {
                                 challengeFeedback.noFallEnd(source, PlayerTimerData.load(player));
                                 playerTimers.remove(player);
+                                PlayerTimerData.save(player, 0);
                                 player.changeGameMode(GameMode.CREATIVE);
                                 active = false;
                                 return 1;
                             }
                         }))));
         });
+    }
+
+    private static void sendCompletionMessage(MinecraftServer server, ServerPlayerEntity playerKilledDragon){
+        for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()){
+            challengeFeedback.completionMessage(player, PlayerTimerData.load(player), playerKilledDragon);
+        }
+    }
+    private static void sendFailMessage(MinecraftServer server){
+        for (ServerPlayerEntity player : server.getPlayerManager().getPlayerList()){
+            challengeFeedback.noFallFailedN(player,  PlayerTimerData.load(player));
+        }
     }
 }

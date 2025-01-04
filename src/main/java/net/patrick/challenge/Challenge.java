@@ -17,6 +17,5 @@ public class Challenge implements ModInitializer {
 	public void onInitialize() {
 		TimerCommand.register();        //register TimerCommand
 		ChallengeCommand.register();    //register ChallengeCommand
-		PlayerJoinHandler.register();	//register welcome Message
 	}
 }

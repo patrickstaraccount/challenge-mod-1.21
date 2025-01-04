@@ -1,6 +1,10 @@
 package net.patrick.challenge.commands.challengeCommand;
 
+import net.minecraft.client.session.report.ReporterEnvironment;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageType;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Style;
@@ -19,16 +23,6 @@ public class challengeFeedback {
     static Text challenge = Text.empty().append(c).append(c2).append(c3);
     static Text tod = Text.empty().append(t).append(t2).append(t3);
 
-    public static void welcome(ServerPlayerEntity player){
-        Text a1 = Text.literal("----------").setStyle(Style.EMPTY.withColor(Formatting.GRAY));
-        Text a2 = Text.literal("Challenge").setStyle(Style.EMPTY.withColor(Formatting.GREEN).withBold(true));
-
-        player.sendMessage(Text.empty());
-        player.sendMessage(Text.empty().append(challengeFeedback.challenge).append(a1).append("  ").append(a2).append("  ").append(a1));
-        player.sendMessage(Text.empty().append(challengeFeedback.challenge).append("    ").append("/challenge help für Syntax").append("    "));
-        player.sendMessage(Text.empty());
-    }
-
     public static void noFallEnd(ServerCommandSource source, int timerValue){
         int days = timerValue / (24 * 3600);
         int hours = (timerValue % (24 * 3600)) / 3600;
@@ -44,7 +38,7 @@ public class challengeFeedback {
                 false);
         source.sendFeedback(() -> Text.empty()
                 .append(challengeFeedback.challenge)
-                .append("Der Timer wurde automatisch pausiert bei: ")
+                .append("Zeit verschwendet: ")
                 .append(styleFormatTimeMessage(formatTimeMessage))
                     .setStyle(Style.EMPTY.withColor(Formatting.GRAY)),
                 false);
@@ -88,6 +82,10 @@ public class challengeFeedback {
     public static void noFallFailed(LivingEntity player, int timerValue){
         Text a1 = Text.literal("----------").setStyle(Style.EMPTY.withColor(Formatting.GRAY));
         Text a2 = Text.literal("NoFallDamage").setStyle(Style.EMPTY.withColor(Formatting.GREEN).withBold(true));
+        Text playerFailed = Text.literal(player.getName().getString())
+                .setStyle(Style.EMPTY
+                    .withColor(Formatting.GREEN)
+                    .withBold(true));
         int days = timerValue / (24 * 3600);
         int hours = (timerValue % (24 * 3600)) / 3600;
         int minutes = (timerValue % 3600) / 60;
@@ -95,7 +93,8 @@ public class challengeFeedback {
 
         String formatTimeMessage = TimerCommand.formatTimeMessage(days, hours, minutes, seconds);
         player.sendMessage(Text.literal(""));
-        player.sendMessage(Text.empty().append(a1).append(a2).append(a1));
+        player.sendMessage(Text.empty().append(challengeFeedback.tod).append(a1).append(a2).append(a1));
+        player.sendMessage(Text.empty().append(challengeFeedback.tod).append(playerFailed).append(" hat Fallschaden genommen!"));
         player.sendMessage(Text.empty().append(challengeFeedback.tod).append("Challenge nicht erfolgreich beendet"));
         player.sendMessage(Text.empty().append(challengeFeedback.tod).append("Zeit verschwendet: ").append(styleFormatTimeMessage(formatTimeMessage)));
         player.sendMessage(Text.literal(""));
@@ -119,5 +118,61 @@ public class challengeFeedback {
                         .append("Die NoFallDamage Challenge ist schon aktiv!")
                         .setStyle(Style.EMPTY.withColor(Formatting.GRAY)),
                 false);
+    }
+
+    public static void completionMessage(ServerPlayerEntity player, int timerValue, ServerPlayerEntity playerKilledDragon){
+        Text a1 = Text.literal("----------").setStyle(Style.EMPTY.withColor(Formatting.GRAY));
+        Text a2 = Text.literal("NoFallDamage").setStyle(Style.EMPTY.withColor(Formatting.GREEN).withBold(true));
+        int days = timerValue / (24 * 3600);
+        int hours = (timerValue % (24 * 3600)) / 3600;
+        int minutes = (timerValue % 3600) / 60;
+        int seconds = timerValue % 60;
+        String formatTimeMessage = TimerCommand.formatTimeMessage(days, hours, minutes, seconds);
+        Text playerKiller = (Text.literal(playerKilledDragon.getName().getString())
+                .setStyle(Style.EMPTY
+                    .withColor(Formatting.GREEN)
+                    .withBold(true)));
+
+        player.sendMessage(Text.empty());
+        player.sendMessage(Text.empty()
+                .append(challengeFeedback.challenge)
+                .append(a1)
+                .append(" ")
+                .append(a2)
+                .append(" ")
+                .append(a1));
+        player.sendMessage(Text.empty()
+                .append(challengeFeedback.challenge)
+                .append(playerKiller)
+                .append(" hat den EnderDragon besiegt!"));
+        player.sendMessage(Text.empty()
+                .append(challengeFeedback.challenge)
+                .append("Challenge erfolgreich beendet!"));
+        player.sendMessage(Text.empty()
+                .append(challengeFeedback.challenge)
+                .append("Benötigte Zeit: ")
+                .append(styleFormatTimeMessage(formatTimeMessage)));
+        player.sendMessage(Text.empty());
+    }
+    public static void noFallFailedN(ServerPlayerEntity player, int timerValue){
+        Text a1 = Text.literal("----------").setStyle(Style.EMPTY.withColor(Formatting.GRAY));
+        Text a2 = Text.literal("NoFallDamage").setStyle(Style.EMPTY.withColor(Formatting.GREEN).withBold(true));
+        Text playerFailed = Text.literal(player.getName().getString())
+                .setStyle(Style.EMPTY
+                        .withColor(Formatting.GREEN)
+                        .withBold(true));
+        int days = timerValue / (24 * 3600);
+        int hours = (timerValue % (24 * 3600)) / 3600;
+        int minutes = (timerValue % 3600) / 60;
+        int seconds = timerValue % 60;
+
+        String formatTimeMessage = TimerCommand.formatTimeMessage(days, hours, minutes, seconds);
+        player.sendMessage(Text.literal(""));
+        player.sendMessage(Text.empty().append(challengeFeedback.tod).append(a1).append(a2).append(a1));
+        player.sendMessage(Text.empty().append(challengeFeedback.tod).append(playerFailed).append(" ist gestorben!"));
+        player.sendMessage(Text.empty().append(challengeFeedback.tod).append("Challenge nicht erfolgreich beendet!"));
+        player.sendMessage(Text.empty().append(challengeFeedback.tod).append("Zeit verschwendet: ").append(styleFormatTimeMessage(formatTimeMessage)));
+        player.sendMessage(Text.literal(""));
+
     }
 }

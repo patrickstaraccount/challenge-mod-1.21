@@ -197,6 +197,7 @@ public class TimerCommand {
 
                             //update and save the player's timer to the set value
                             playerTimers.put(player, totalSeconds);
+                            playerTimers.remove(player);
                             PlayerTimerData.save(player, totalSeconds);
 
                             //send timerFeedback with formatted time
