@@ -6,25 +6,33 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.patrick.challenge.challenges.noFallDamage.noFallDamage;
 
+//adds a challenge command to the game
 public class ChallengeCommand {
     private static boolean noFallChallengeActive = false;
 
     public static void register(){
 
+        //registering the command
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(CommandManager.literal("challenge")
+
+                //command to show syntax
                 .then(CommandManager.literal("help").executes(context -> {
                     ServerCommandSource source = context.getSource();
 
+                    //send help message to the player
                     challengeFeedback.help(source);
                     return 1;
                 }))
+
+                //command to select the challenge to play
                 .then(CommandManager.literal("noFallDamage")
                     .then(CommandManager.literal("start")
                         .executes(context -> {
                             ServerCommandSource source = context.getSource();
                             ServerPlayerEntity player = source.getPlayer();
 
+                            //start the challenge and set challengeVariable to true
                             noFallDamage.startChallenge(player, source);
                             setNoFallChallengeActive(true);
                             return 1;
@@ -34,6 +42,7 @@ public class ChallengeCommand {
                             ServerCommandSource source = context.getSource();
                             ServerPlayerEntity player = source.getPlayer();
 
+                            //end the challenge and set challengeVariable to false
                             noFallDamage.endChallenge(player, source);
                             setNoFallChallengeActive(false);
                             return 1;
@@ -41,11 +50,13 @@ public class ChallengeCommand {
         });
     }
 
-    public static boolean isNoFallChallengeActive() {
-        return noFallChallengeActive;
-    }
-
+    //setter for challengeVariable
     public static void setNoFallChallengeActive(boolean noFallChallengeActive) {
         ChallengeCommand.noFallChallengeActive = noFallChallengeActive;
+    }
+
+    //getter for challengeVariable
+    public static boolean isNoFallChallengeActive() {
+        return noFallChallengeActive;
     }
 }

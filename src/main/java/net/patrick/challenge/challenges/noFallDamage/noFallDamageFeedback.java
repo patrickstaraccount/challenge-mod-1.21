@@ -6,9 +6,9 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.patrick.challenge.commands.challengeCommand.challengeFeedback;
 import net.patrick.challenge.commands.timer.TimerCommand;
 
+//formats the challengeFeedback send back to the player
 public class noFallDamageFeedback {
     static Text t = Text.literal("[").setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY));
     static Text t2 = Text.literal("Tod").setStyle(Style.EMPTY.withColor(Formatting.GOLD));
@@ -20,7 +20,7 @@ public class noFallDamageFeedback {
     static Text tod = Text.empty().append(t).append(t2).append(t3);
 
     public static void challengeStart(ServerCommandSource source){
-        source.sendFeedback(() -> Text.empty(), false);
+        source.sendFeedback(Text::empty, false);
         source.sendFeedback(() -> Text.empty()
                         .append(noFallDamageFeedback.challenge)
                         .append("Challenge wurde gestartet!")
@@ -31,7 +31,7 @@ public class noFallDamageFeedback {
                         .append("Der Timer wurde automatisch gestartet")
                         .setStyle(Style.EMPTY.withColor(Formatting.GRAY)),
                 false);
-        source.sendFeedback(() -> Text.empty(), false);
+        source.sendFeedback(Text::empty, false);
     }
 
     public static void challengeEnd(ServerCommandSource source, int timerValue){
@@ -41,7 +41,7 @@ public class noFallDamageFeedback {
         int seconds = timerValue % 60;
         String formatTimeMessage = TimerCommand.formatTimeMessage(days, hours, minutes, seconds);
 
-        source.sendFeedback(() -> Text.empty(), false);
+        source.sendFeedback(Text::empty, false);
         source.sendFeedback(() -> Text.empty()
                         .append(noFallDamageFeedback.challenge)
                         .append("Challenge wurde abgebrochen!")
@@ -53,7 +53,7 @@ public class noFallDamageFeedback {
                         .append(styleFormatTimeMessage(formatTimeMessage))
                         .setStyle(Style.EMPTY.withColor(Formatting.GRAY)),
                 false);
-        source.sendFeedback(() -> Text.empty(), false);
+        source.sendFeedback(Text::empty, false);
     }
 
     public static void noFallFailed(LivingEntity player, int timerValue){

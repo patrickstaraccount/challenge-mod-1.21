@@ -63,6 +63,7 @@ public class TimerCommand {
 
                         //update and save timer
                         playerTimers.put(player, 0);
+                        assert player != null;
                         PlayerTimerData.save(player, 0);
 
                         //send timerFeedback to the source
@@ -90,6 +91,7 @@ public class TimerCommand {
                             int seconds = currentTimerValue % 60;
 
                             //update and save timer
+                            assert player != null;
                             PlayerTimerData.save(player, currentTimerValue);
                             playerTimers.remove(player);
 
@@ -112,6 +114,7 @@ public class TimerCommand {
                         if(!isPlayer(source)) return 0;
 
                         //get timerValue from players storage
+                        assert player != null;
                         int persistedTimerValue = PlayerTimerData.load(player);
 
                         //check if there is active timer in storage of player to resume
@@ -140,6 +143,7 @@ public class TimerCommand {
                         if(!isPlayer(source)) return 0;
 
                         //update and save timer
+                        assert player != null;
                         PlayerTimerData.save(player, 0);
                         playerTimers.remove(player);
 
@@ -152,7 +156,6 @@ public class TimerCommand {
                 .then(CommandManager.literal("help")
                     .executes(commandContext -> {
                         ServerCommandSource source = commandContext.getSource();
-                        ServerPlayerEntity player = source.getPlayer();
 
                         //check if source is player
                         if(!isPlayer(source)) return 0;
@@ -198,6 +201,7 @@ public class TimerCommand {
                             //update and save the player's timer to the set value
                             playerTimers.put(player, totalSeconds);
                             playerTimers.remove(player);
+                            assert player != null;
                             PlayerTimerData.save(player, totalSeconds);
 
                             //send timerFeedback with formatted time
@@ -226,7 +230,7 @@ public class TimerCommand {
     }
 
     private static boolean isPlayer(ServerCommandSource source){
-        if (!(source.getEntity() instanceof ServerPlayerEntity player)) {
+        if (!(source.getEntity() instanceof ServerPlayerEntity)) {
             timerFeedback.isPlayer(source);
             return false;
         }else return true;
