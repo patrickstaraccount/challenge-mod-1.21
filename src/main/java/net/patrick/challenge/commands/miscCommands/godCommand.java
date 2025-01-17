@@ -34,6 +34,7 @@ public class godCommand {
                         godPlayers.add(player);
                         source.sendFeedback(() -> Text.empty().append(god).append("Aktiviert"), false);
                         player.setHealth(player.getMaxHealth());
+                        player.getHungerManager().setExhaustion(20);
                     }
                     return 1;
             }));
@@ -58,6 +59,15 @@ public class godCommand {
                     abilities.invulnerable = false;
                     player.sendAbilitiesUpdate();
                 }
+        });
+        ServerTickEvents.START_WORLD_TICK.register(world -> {
+            for (ServerPlayerEntity player : world.getPlayers()){
+                if(!godPlayers.contains(player)){
+                    if(player.isCreative() || player.isSpectator()){
+                        godPlayers.add(player);
+                    }
+                }
+            }
         });
     }
 }
