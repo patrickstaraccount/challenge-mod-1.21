@@ -2,16 +2,18 @@ package net.patrick.challenge.commands.challengeCommand;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.minecraft.entity.boss.dragon.EnderDragonEntity;
 import net.minecraft.entity.damage.DamageTypes;
-import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.GameMode;
-import net.patrick.challenge.commands.timerCommand.PlayerTimerData;
+import net.patrick.challenge.commands.miscCommands.flyCommand;
+import net.patrick.challenge.commands.miscCommands.godCommand;
+import net.patrick.challenge.commands.timer.PlayerTimerData;
 
-import static net.patrick.challenge.commands.timerCommand.TimerCommand.playerTimers;
+import static net.patrick.challenge.commands.timer.TimerCommand.playerTimers;
 
 public class ChallengeCommand {
     private static boolean active = false;
@@ -19,7 +21,7 @@ public class ChallengeCommand {
     public static void register(){
         ServerLivingEntityEvents.AFTER_DEATH.register((livingEntity, damageSource) -> {
             MinecraftServer server = livingEntity.getServer();
-            if (livingEntity instanceof PigEntity && active && server != null){
+            if (livingEntity instanceof EnderDragonEntity && active && server != null){
                 if(damageSource != null && damageSource.getAttacker() instanceof ServerPlayerEntity){
                     ServerPlayerEntity player = (ServerPlayerEntity) damageSource.getAttacker();
                     active = false;
@@ -52,7 +54,7 @@ public class ChallengeCommand {
                 challengeFeedback.noFallFailed(player, PlayerTimerData.load(player));
                 active = false;
                 playerTimers.remove(player);
-                ((ServerPlayerEntity) entity).changeGameMode(GameMode.SPECTATOR);
+                player.changeGameMode(GameMode.SPECTATOR);
                 return false;
             }else return true;
         });
@@ -74,6 +76,8 @@ public class ChallengeCommand {
                             if(!active){
                                 challengeFeedback.noFallStart(source);
                                 playerTimers.put(player, 0);
+                                flyCommand.flyPlayers.remove(player);
+                                godCommand.godPlayers.remove(player);
                                 player.changeGameMode(GameMode.SURVIVAL);
                                 active = true;
                                 return 1;
@@ -95,6 +99,7 @@ public class ChallengeCommand {
                                 challengeFeedback.noFallEnd(source, PlayerTimerData.load(player));
                                 playerTimers.remove(player);
                                 PlayerTimerData.save(player, 0);
+                                flyCommand.flyPlayers.add(player);
                                 player.changeGameMode(GameMode.CREATIVE);
                                 active = false;
                                 return 1;

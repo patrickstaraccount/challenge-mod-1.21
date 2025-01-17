@@ -14,7 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class godCommand {
-    private static final Set<ServerPlayerEntity> godPlayers = new HashSet<>();
+    public static final Set<ServerPlayerEntity> godPlayers = new HashSet<>();
 
     public static void register() {
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
@@ -23,7 +23,7 @@ public class godCommand {
                     ServerCommandSource source = context.getSource();
                     ServerPlayerEntity player = source.getPlayer();
                     Text t = Text.literal("[").setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY));
-                    Text t2 = Text.literal("Tod").setStyle(Style.EMPTY.withColor(Formatting.GOLD));
+                    Text t2 = Text.literal("God").setStyle(Style.EMPTY.withColor(Formatting.GOLD));
                     Text t3 = Text.literal("] ").setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY));
                     Text god = Text.empty().append(t).append(t2).append(t3);
 
@@ -48,8 +48,15 @@ public class godCommand {
         ServerTickEvents.START_WORLD_TICK.register(world -> {
             for(ServerPlayerEntity player : world.getPlayers())
                 if (godPlayers.contains(player)){
-                    player.getHungerManager().setFoodLevel(20);
-                    player.getHungerManager().setExhaustion(0.5F);
+                    var abilities = player.getAbilities();
+
+                    abilities.invulnerable = true;
+                    player.sendAbilitiesUpdate();
+                }else{
+                    var abilities = player.getAbilities();
+
+                    abilities.invulnerable = false;
+                    player.sendAbilitiesUpdate();
                 }
         });
     }

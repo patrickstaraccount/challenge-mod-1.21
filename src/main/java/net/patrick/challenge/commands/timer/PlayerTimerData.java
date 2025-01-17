@@ -1,4 +1,4 @@
-package net.patrick.challenge.commands.timerCommand;
+package net.patrick.challenge.commands.timer;
 
 import net.minecraft.server.network.ServerPlayerEntity;
 

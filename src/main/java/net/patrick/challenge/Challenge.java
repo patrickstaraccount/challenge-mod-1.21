@@ -5,7 +5,7 @@ import net.patrick.challenge.commands.challengeCommand.ChallengeCommand;
 import net.patrick.challenge.commands.miscCommands.flyCommand;
 import net.patrick.challenge.commands.miscCommands.godCommand;
 import net.patrick.challenge.commands.miscCommands.healCommand;
-import net.patrick.challenge.commands.timerCommand.TimerCommand;
+import net.patrick.challenge.commands.timer.TimerCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

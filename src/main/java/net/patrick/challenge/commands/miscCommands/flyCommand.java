@@ -2,7 +2,6 @@ package net.patrick.challenge.commands.miscCommands;
 
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -14,7 +13,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class flyCommand {
-    private static final Set<ServerPlayerEntity> flyPlayers = new HashSet<>();
+    public static final Set<ServerPlayerEntity> flyPlayers = new HashSet<>();
     public static void register(){
         CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
             dispatcher.register(CommandManager.literal("fly")
@@ -26,7 +25,9 @@ public class flyCommand {
                     Text t3 = Text.literal("] ").setStyle(Style.EMPTY.withColor(Formatting.DARK_GRAY));
                     Text fly = Text.empty().append(t).append(t2).append(t3);
 
-                    if(flyPlayers.contains(player)){
+                    if (player.isCreative() || player.isSpectator()){
+                        source.sendFeedback(() -> Text.empty().append(fly).append("Du kannst diesen Command nur nutzen wenn du im Survival modus bist"), false);
+                    }else if(flyPlayers.contains(player)){
                         flyPlayers.remove(player);
                         source.sendFeedback(() -> Text.empty().append(fly).append("Deaktiviert"), false);
                     }else {
@@ -50,6 +51,16 @@ public class flyCommand {
                     abilities.flying = false;
 
                     player.sendAbilitiesUpdate();
+                }
+            }
+        });
+
+        ServerTickEvents.START_WORLD_TICK.register(world -> {
+            for (ServerPlayerEntity player : world.getPlayers()){
+                if(!flyPlayers.contains(player)){
+                    if(player.isCreative() || player.isSpectator()){
+                        flyPlayers.add(player);
+                    }
                 }
             }
         });

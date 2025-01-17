@@ -1,7 +1,6 @@
-package net.patrick.challenge.commands.timerCommand;
+package net.patrick.challenge.commands.timer;
 
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;

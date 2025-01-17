@@ -6,7 +6,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.patrick.challenge.commands.timerCommand.TimerCommand;
+import net.patrick.challenge.commands.timer.TimerCommand;
 
 
 public class challengeFeedback {
