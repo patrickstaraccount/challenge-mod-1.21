@@ -46,6 +46,27 @@ public class ChallengeCommand {
                             noFallDamage.endChallenge(player, source);
                             setNoFallChallengeActive(false);
                             return 1;
+                        })))
+
+                //command to select the challenge to play
+                .then(CommandManager.literal("3hearths")
+                    .then(CommandManager.literal("start")
+                        .executes(context -> {
+                            ServerCommandSource source = context.getSource();
+                            ServerPlayerEntity player = source.getPlayer();
+
+                            //start the challenge and set challengeVariable to true
+
+                            return 1;
+                        }))
+                    .then(CommandManager.literal("end")
+                        .executes(context -> {
+                            ServerCommandSource source = context.getSource();
+                            ServerPlayerEntity player = source.getPlayer();
+
+                            //end the challenge and set challengeVariable to false
+
+                            return 1;
                         }))));
         });
     }
