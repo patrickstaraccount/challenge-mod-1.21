@@ -2,6 +2,7 @@ package net.patrick.challenge;
 
 import net.fabricmc.api.ModInitializer;
 import net.patrick.challenge.challenges.noFallDamage.noFallDamage;
+import net.patrick.challenge.challenges.threeHearths.threeHearths;
 import net.patrick.challenge.commands.challengeCommand.ChallengeCommand;
 import net.patrick.challenge.commands.miscCommands.flyCommand;
 import net.patrick.challenge.commands.miscCommands.godCommand;

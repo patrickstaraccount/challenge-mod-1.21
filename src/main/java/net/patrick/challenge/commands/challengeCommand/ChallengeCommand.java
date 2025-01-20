@@ -5,10 +5,12 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.patrick.challenge.challenges.noFallDamage.noFallDamage;
+import net.patrick.challenge.challenges.threeHearths.threeHearths;
 
 //adds a challenge command to the game
 public class ChallengeCommand {
     private static boolean noFallChallengeActive = false;
+    private static boolean threeHearthsActive = false;
 
     public static void register(){
 
@@ -56,7 +58,7 @@ public class ChallengeCommand {
                             ServerPlayerEntity player = source.getPlayer();
 
                             //start the challenge and set challengeVariable to true
-
+                            threeHearths.startChallenge(player, 6);
                             return 1;
                         }))
                     .then(CommandManager.literal("end")
@@ -65,7 +67,7 @@ public class ChallengeCommand {
                             ServerPlayerEntity player = source.getPlayer();
 
                             //end the challenge and set challengeVariable to false
-
+                            threeHearths.endChallenge(player, 20);
                             return 1;
                         }))));
         });
@@ -79,5 +81,11 @@ public class ChallengeCommand {
     //getter for challengeVariable
     public static boolean isNoFallChallengeActive() {
         return noFallChallengeActive;
+    }
+
+    public static boolean isThreeHearthsActive() { return threeHearthsActive; }
+
+    public static void setThreeHearthsActive(boolean threeHearthsActive) {
+        ChallengeCommand.threeHearthsActive = threeHearthsActive;
     }
 }
