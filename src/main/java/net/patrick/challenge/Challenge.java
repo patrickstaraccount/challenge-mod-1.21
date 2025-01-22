@@ -7,6 +7,7 @@ import net.patrick.challenge.commands.challengeCommand.ChallengeCommand;
 import net.patrick.challenge.commands.miscCommands.flyCommand;
 import net.patrick.challenge.commands.miscCommands.godCommand;
 import net.patrick.challenge.commands.miscCommands.healCommand;
+import net.patrick.challenge.commands.miscCommands.modifyHealth;
 import net.patrick.challenge.commands.timer.TimerCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,7 @@ public class Challenge implements ModInitializer {
 		godCommand.register();          //register godCommand
 		healCommand.register();         //register healCommand
 		flyCommand.register();          //register flyCommand
+		modifyHealth.register();        //register modifyHealth Command
 		noFallDamage.register();        //register noFallDamage Challenge
 		threeHearths.register();        //registering threeHearths Challenge
 	}
