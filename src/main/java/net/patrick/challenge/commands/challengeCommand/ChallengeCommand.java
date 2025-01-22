@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import net.patrick.challenge.challenges.noFallDamage.noFallDamage;
 import net.patrick.challenge.challenges.threeHearths.threeHearths;
 
@@ -34,9 +35,13 @@ public class ChallengeCommand {
                             ServerCommandSource source = context.getSource();
                             ServerPlayerEntity player = source.getPlayer();
 
-                            //start the challenge and set challengeVariable to true
-                            noFallDamage.startChallenge(player, source);
-                            setNoFallChallengeActive(true);
+                            if(isThreeHearthsActive()){
+                                challengeFeedback.threeHearthsActive(source);
+                            }else{
+                                //start the challenge and set challengeVariable to true
+                                noFallDamage.startChallenge(player, source);
+                                setNoFallChallengeActive(true);
+                            }
                             return 1;
                         }))
                     .then(CommandManager.literal("end")
@@ -57,8 +62,13 @@ public class ChallengeCommand {
                             ServerCommandSource source = context.getSource();
                             ServerPlayerEntity player = source.getPlayer();
 
-                            //start the challenge and set challengeVariable to true
-                            threeHearths.startChallenge(player, 6);
+                            if(isNoFallChallengeActive()){
+                                challengeFeedback.noFallActive(source);
+                            }else{
+                                //start the challenge and set challengeVariable to true
+                                threeHearths.startChallenge(player, 6, source);
+                                setThreeHearthsActive(true);
+                            }
                             return 1;
                         }))
                     .then(CommandManager.literal("end")
@@ -67,7 +77,8 @@ public class ChallengeCommand {
                             ServerPlayerEntity player = source.getPlayer();
 
                             //end the challenge and set challengeVariable to false
-                            threeHearths.endChallenge(player, 20);
+                            threeHearths.endChallenge(player, 20, source);
+                            setThreeHearthsActive(false);
                             return 1;
                         }))));
         });
@@ -83,9 +94,9 @@ public class ChallengeCommand {
         return noFallChallengeActive;
     }
 
-    public static boolean isThreeHearthsActive() { return threeHearthsActive; }
-
     public static void setThreeHearthsActive(boolean threeHearthsActive) {
         ChallengeCommand.threeHearthsActive = threeHearthsActive;
     }
+
+    public static boolean isThreeHearthsActive() { return threeHearthsActive; }
 }

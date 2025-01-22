@@ -26,5 +26,6 @@ public class Challenge implements ModInitializer {
 		healCommand.register();         //register healCommand
 		flyCommand.register();          //register flyCommand
 		noFallDamage.register();        //register noFallDamage Challenge
+		threeHearths.register();        //registering threeHearths Challenge
 	}
 }

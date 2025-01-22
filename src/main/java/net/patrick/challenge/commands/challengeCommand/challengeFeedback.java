@@ -31,4 +31,14 @@ public class challengeFeedback {
                 false);
         source.sendFeedback(Text::empty, false);
     }
+
+    public static void noFallActive(ServerCommandSource source){
+        source.sendFeedback(() -> Text.empty().append(challengeFeedback.challenge).append("Du musst zuerst die NoFallDamage Challenge deaktivieren!"), false);
+        source.sendFeedback(() -> Text.empty().append(challengeFeedback.challenge).append("/challenge help for Syntax!"), false);
+    }
+
+    public static void threeHearthsActive(ServerCommandSource source){
+        source.sendFeedback(() -> Text.empty().append(challengeFeedback.challenge).append("Du musst zuerst die Three Hearths Challenge deaktivieren!"), false);
+        source.sendFeedback(() -> Text.empty().append(challengeFeedback.challenge).append("/challenge help for Syntax!"), false);
+    }
 }

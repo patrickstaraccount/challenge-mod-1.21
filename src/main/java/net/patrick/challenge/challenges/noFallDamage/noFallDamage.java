@@ -11,6 +11,7 @@ import net.patrick.challenge.commands.miscCommands.flyCommand;
 import net.patrick.challenge.commands.miscCommands.godCommand;
 import net.patrick.challenge.commands.timer.PlayerTimerData;
 
+import static net.patrick.challenge.commands.miscCommands.flyCommand.flyPlayers;
 import static net.patrick.challenge.commands.timer.TimerCommand.playerTimers;
 
 //code for the noFallDamage Challenge
@@ -31,7 +32,9 @@ public class noFallDamage {
                     active = false;
                     playerTimers.remove(player);
                     player.changeGameMode(GameMode.SPECTATOR);
+                    flyPlayers.add(player);
                     sendCompletionMessage(server, player);
+                    PlayerTimerData.save(player, 0);
                 }
             }
         });
@@ -49,8 +52,10 @@ public class noFallDamage {
                     active = false;
                     playerTimers.remove(player);
                     sendFailMessage(server);
+                    PlayerTimerData.save(player, 0);
                     player.setHealth(player.getMaxHealth());
                     player.getHungerManager().setFoodLevel(20);
+                    flyPlayers.add(player);
                     player.changeGameMode(GameMode.SPECTATOR);
                     return false;
                 }
@@ -84,7 +89,7 @@ public class noFallDamage {
             //set active to true, set player into survival, set fly and god to false, start the timer and send feedback to the player
             noFallDamageFeedback.challengeStart(source);
             playerTimers.put(player, 0);
-            flyCommand.flyPlayers.remove(player);
+            flyPlayers.remove(player);
             godCommand.godPlayers.remove(player);
             player.changeGameMode(GameMode.SURVIVAL);
             active = true;
@@ -104,7 +109,7 @@ public class noFallDamage {
             noFallDamageFeedback.challengeEnd(source, PlayerTimerData.load(player));
             playerTimers.remove(player);
             PlayerTimerData.save(player, 0);
-            flyCommand.flyPlayers.add(player);
+            flyPlayers.add(player);
             player.changeGameMode(GameMode.CREATIVE);
             active = false;
         }
